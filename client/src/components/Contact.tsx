@@ -26,9 +26,31 @@ export default function Contact() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Thanks! We\'ll be in touch shortly to confirm your booking.')
+    setSubmitting(true)
+    setError('')
+    try {
+      const res = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Something went wrong')
+      }
+      setSubmitted(true)
+      setForm({ name: '', phone: '', email: '', service: '', vehicle: '', message: '' })
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to submit. Please call us directly.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -181,13 +203,22 @@ export default function Contact() {
               />
             </div>
 
-            <button type="submit" className="gold-btn text-base py-4 w-full">
-              Send Booking Request
-            </button>
-
-            <p className="text-gray-500 text-xs text-center">
-              We'll respond within a few hours to confirm your appointment.
-            </p>
+            {submitted ? (
+              <div className="text-center py-4 border border-[#C9A84C]/40 rounded-lg bg-[#C9A84C]/10">
+                <p className="text-[#C9A84C] font-semibold">Booking request sent!</p>
+                <p className="text-gray-400 text-sm mt-1">We'll reach out within a few hours to confirm.</p>
+              </div>
+            ) : (
+              <>
+                <button type="submit" disabled={submitting} className="gold-btn text-base py-4 w-full disabled:opacity-60 disabled:cursor-not-allowed">
+                  {submitting ? 'Sending...' : 'Send Booking Request'}
+                </button>
+                {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+                <p className="text-gray-500 text-xs text-center">
+                  We'll respond within a few hours to confirm your appointment.
+                </p>
+              </>
+            )}
           </form>
         </div>
       </div>

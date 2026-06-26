@@ -1,2 +1,4 @@
 node_modules/
 vite-project/
+server/venv/
+server/detailing.db
