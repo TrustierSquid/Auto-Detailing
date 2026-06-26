@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E2C068;
+    --dark: #0a0a0a;
+    --dark-card: #141414;
+    --dark-border: #2a2a2a;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[#0a0a0a] text-white font-sans;
+  }
+}
+
+@layer utilities {
+  .gold-text {
+    color: var(--gold);
+  }
+
+  .gold-btn {
+    @apply bg-[#C9A84C] text-black font-semibold px-6 py-3 rounded transition-all duration-200 hover:bg-[#E2C068] hover:scale-105;
+  }
+
+  .outline-btn {
+    @apply border border-[#C9A84C] text-[#C9A84C] font-semibold px-6 py-3 rounded transition-all duration-200 hover:bg-[#C9A84C] hover:text-black;
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl font-bold text-white mb-4;
+  }
+
+  .card-dark {
+    @apply bg-[#141414] border border-[#2a2a2a] rounded-xl p-6;
+  }
+}
